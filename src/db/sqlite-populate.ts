@@ -1,7 +1,6 @@
 import { randomUUID } from "crypto";
 import { readFileSync } from "fs";
 import { Database } from "sqlite";
-import { getMaxAwardInterval } from "../repository/awards-repository";
 
 const movieListLines = readFileSync("movielist.csv", {
   encoding: "utf8",
