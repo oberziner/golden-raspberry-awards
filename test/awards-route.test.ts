@@ -1,9 +1,9 @@
 import supertest from "supertest";
 import { buildApp } from "../src/server/start";
 
-describe("GET /user", function () {
+describe("GET /awards", function () {
 
-  it("responds with apr", async function() {
+  it("returns longest and shortest award intervals", async function() {
     const app = await buildApp();
     await supertest(app)
       .get("/awards")

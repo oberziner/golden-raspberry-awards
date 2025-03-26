@@ -2,12 +2,15 @@ import { randomUUID } from "crypto";
 import { readFileSync } from "fs";
 import { Database } from "sqlite";
 
-const movieListLines = readFileSync("movielist.csv", {
-  encoding: "utf8",
-  flag: "r",
-})
-  .split("\n")
-  .filter((line) => line.length > 0);
+function loadMovieList() {
+  const movieListCSV = readFileSync("movielist.csv", {
+    encoding: "utf8",
+    flag: "r",
+  });
+  return movieListCSV
+    .split("\n")
+    .filter((line) => line.length > 0);
+}
 
 async function insertMovie(
   db: Database,
@@ -50,7 +53,8 @@ async function insertProducers(
 }
 
 export async function seedDatabase(db: Database) {
-  for (const line of movieListLines) {
+  const movieList = loadMovieList();
+  for (const line of movieList) {
     const [year, title, studios, producers, winner] = line.split(";");
 
     const movieId = await insertMovie(db, year, title, studios, winner);
