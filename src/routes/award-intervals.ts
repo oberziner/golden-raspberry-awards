@@ -1,8 +1,13 @@
 import express, { Request, Response } from "express";
-import { getAwardIntervals } from "../repository/awards-repository";
+import {
+  getMaxAwardInterval,
+  getMinAwardInterval,
+  ProducerAwardInterval,
+} from "../repository/awards-repository";
 
 async function getAwardIntervalsRoute(req: Request, res: Response) {
-  const awards = await getAwardIntervals();
+  const maxAward = await getMaxAwardInterval();
+  const minAward = await getMinAwardInterval();
   const awardIntervals = {
     min: [
       {
@@ -33,7 +38,10 @@ async function getAwardIntervalsRoute(req: Request, res: Response) {
       },
     ],
   };
-  res.status(200).json(awards);
+  res.status(200).json({
+    min: minAward,
+    max: maxAward,
+  });
 }
 
 const route = express.Router();

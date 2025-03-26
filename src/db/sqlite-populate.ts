@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import { readFileSync } from "fs";
 import { Database } from "sqlite";
+import { getMaxAwardInterval } from "../repository/awards-repository";
 
 const movieListLines = readFileSync("movielist.csv", {
   encoding: "utf8",
@@ -22,7 +23,7 @@ async function insertMovie(
     year,
     title,
     studios,
-    winner,
+    winner === "yes",
   ]);
   return movieId;
 }
@@ -34,12 +35,13 @@ async function insertProducers(
 ) {
   const producerList = producers
     .split(/ and |,/)
-    .filter((item) => item.length > 0);
+    .filter((p) => p.length > 0)
+    .map((p) => p.trim());
 
-  for (const prod of producerList) {
+  for (const producer of producerList) {
     const producerRow = await db.get(
       "INSERT INTO producers VALUES (?, ?) ON CONFLICT(name) DO UPDATE SET name = EXCLUDED.name RETURNING *",
-      [randomUUID(), prod],
+      [randomUUID(), producer],
     );
     await db.run("INSERT INTO producer_movies VALUES (?, ?)", [
       movieId,
