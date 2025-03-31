@@ -19,13 +19,14 @@ export async function getMaxAwardInterval(): Promise<ProducerAwardInterval[]> {
     ),
     award_differences AS (
         SELECT 
-            a.id,
+            random() as id,
             a.producer_name,
             a.year,
             b.year AS previous_award_year
         FROM winner_producer_years a
         LEFT JOIN winner_producer_years b
         ON a.id = b.id AND a.year > b.year
+        AND NOT EXISTS (SELECT 1 from winner_producer_years c where c.id = a.id and (c.year > b.year and c.year < a.year))
 				WHERE b.year IS NOT NULL
     )
     SELECT producer_name,
@@ -33,13 +34,12 @@ export async function getMaxAwardInterval(): Promise<ProducerAwardInterval[]> {
            year AS followingWin,
            previous_award_year AS previousWin
     FROM award_differences
-    GROUP BY producer_name
+    GROUP BY id
     HAVING interval = (
         SELECT MAX(year - previous_award_year)
         FROM award_differences
     )
-    ORDER BY interval DESC;
-
+    ORDER BY interval DESC, previousWin ASC;
   `)) as ProducerAwardInterval[];
   return results;
 }
@@ -56,13 +56,14 @@ export async function getMinAwardInterval(): Promise<ProducerAwardInterval[]> {
     ),
     award_differences AS (
         SELECT 
-            a.id,
+            random() as id,
             a.producer_name,
             a.year,
             b.year AS previous_award_year
         FROM winner_producer_years a
         LEFT JOIN winner_producer_years b
         ON a.id = b.id AND a.year > b.year
+        AND NOT EXISTS (SELECT 1 from winner_producer_years c where c.id = a.id and (c.year > b.year and c.year < a.year))
 				WHERE b.year IS NOT NULL
     )
     SELECT producer_name,
@@ -70,13 +71,12 @@ export async function getMinAwardInterval(): Promise<ProducerAwardInterval[]> {
            year AS followingWin,
            previous_award_year AS previousWin
     FROM award_differences
-    GROUP BY producer_name
+    GROUP BY id
     HAVING interval = (
         SELECT MIN(year - previous_award_year)
         FROM award_differences
     )
-    ORDER BY interval DESC;
-
+    ORDER BY interval DESC, previousWin ASC;
   `)) as ProducerAwardInterval[];
   return results;
 }

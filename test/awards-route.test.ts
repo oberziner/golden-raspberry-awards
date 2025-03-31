@@ -19,14 +19,26 @@ describe("GET /awards", function () {
               interval: 1,
               followingWin: 1991,
               previousWin: 1990
+            },
+            {
+              producer_name: 'Matthew Vaughn',
+              interval: 1,
+              followingWin: 2003,
+              previousWin: 2002
             }
           ],
           max: [
             {
               producer_name: 'Matthew Vaughn',
-              interval: 13,
-              followingWin: 2015,
-              previousWin: 2002
+              interval: 22,
+              followingWin: 2002,
+              previousWin: 1980
+            },
+            {
+              producer_name: 'Matthew Vaughn',
+              interval: 22,
+              followingWin: 2037,
+              previousWin: 2015
             }
           ]
         },
